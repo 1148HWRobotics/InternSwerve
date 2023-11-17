@@ -6,10 +6,21 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import frc.robot.Devices.*;
 
-public class ExampleSubsystem extends SubsystemBase {
+public class DriveBase extends SubsystemBase {
+  SwerveModule frontRight;
+  SwerveModule frontLeft;
+  SwerveModule backRight;
+  SwerveModule backLeft;
+
   /** Creates a new ExampleSubsystem. */
-  public ExampleSubsystem() {}
+  public DriveBase(SwerveModule frontRight, SwerveModule frontLeft, SwerveModule backRight, SwerveModule backLeft) {
+
+  }
+
+  SwerveDriveKinematics kinematics = new SwerveDriveKinematics(null);
 
   /**
    * Example command factory method.
@@ -26,7 +37,8 @@ public class ExampleSubsystem extends SubsystemBase {
   }
 
   /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
+   * An example method querying a boolean state of the subsystem (for example, a
+   * digital sensor).
    *
    * @return value of some boolean subsystem state, such as a digital sensor.
    */
