@@ -5,10 +5,15 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Devices.SwerveModule;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.DriveBase;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.SwerveModulePID;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -25,12 +30,25 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final SwerveModule frontRight = new SwerveModule(0.26035, 0.26035, -40.25390625, 20, 3, 4, true);
+  private final SwerveModule frontLeft = new SwerveModule(-0.26035, 0.26035, -5.09765625, 22, 5, 6, false);
+  private final SwerveModule backRight = new SwerveModule(0.26035, -0.26035, 6.416015625, 23, 1, 2, true);
+  private final SwerveModule backLeft = new SwerveModule(-0.26035, -0.26035, 68.203125, 21, 7, 8, false);
+
+  private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(frontRight.getModulePos(),
+      frontLeft.getModulePos(), backRight.getModulePos(), backLeft.getModulePos());
+
+  private final SwerveModulePID frontRightPID = new SwerveModulePID(0.1, 0.1, 0.1, frontRight);
+  public final SwerveModulePID frontLeftPID = new SwerveModulePID(0.1, 0.1, 0.1, frontLeft);
+  private final SwerveModulePID backRightPID = new SwerveModulePID(0.1, 0.1, 0.1, backRight);
+  private final SwerveModulePID backLeftPID = new SwerveModulePID(0.1, 0.1, 0.1, backLeft);
+
+  public final DriveBase drive = new DriveBase(frontRightPID, frontLeftPID, backRightPID, backLeftPID, 0.5,
+      kinematics);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandPS4Controller m_driverController = new CommandPS4Controller(
-      OperatorConstants.kDriverControllerPort);
-  private final CommandJoystick m_operatorController = new CommandJoystick(OperatorConstants.kDriverControllerPort);
+  public final PS4Controller m_driverController = new PS4Controller(0);
+  public final CommandJoystick m_operatorController = new CommandJoystick(1);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -56,13 +74,11 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
-    m_driverController.circle().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
   }
 
   /**
@@ -72,6 +88,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous;
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return null;
   }
 }

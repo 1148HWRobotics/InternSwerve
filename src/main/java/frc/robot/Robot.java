@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import java.util.Random;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Devices.AbsoluteEncoder;
 import frc.robot.Devices.Imu;
 import frc.robot.Devices.Motor.Falcon;
+import frc.robot.commands.Teleop;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,6 +27,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private Teleop teleop;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -36,6 +40,7 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    teleop = new Teleop(m_robotContainer.drive, m_robotContainer.m_driverController);
   }
 
   /**
@@ -102,17 +107,21 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    CommandScheduler.getInstance().schedule(teleop);
+    System.out.println(m_robotContainer.frontLeftPID.error);
   }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    m_robotContainer.drive.power(0, 1, 0, false);
   }
 
   /** This function is called once when the robot is first started up. */

@@ -3,6 +3,7 @@ package frc.robot.Devices;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Devices.Motor.Falcon;
 import frc.robot.Utils.AngleMath;
+import frc.robot.Devices.AbsoluteEncoder;
 
 public class SwerveModule {
     private Translation2d modulePos;
@@ -15,7 +16,7 @@ public class SwerveModule {
         this.modulePos = new Translation2d(moduleX, moduleY);
         this.turnMotor = new Falcon(turnCanID, false);
         this.goMotor = new Falcon(goCanID, goReversed);
-        this.turnEncoder = new AbsoluteEncoder(turnCanID, encoderZero, false);
+        this.turnEncoder = new AbsoluteEncoder(encoderCanID, encoderZero, false);
         turnMotor.setCurrentLimit(35);
         goMotor.setCurrentLimit(52);
         turnMotor.resetEncoder();
@@ -24,6 +25,10 @@ public class SwerveModule {
 
     public void setGoVoltage(double voltage) {
         goMotor.setVoltage(voltage);
+    }
+
+    public void stop() {
+        goMotor.stop();
     }
 
     public Translation2d getModulePos() {
@@ -63,6 +68,10 @@ public class SwerveModule {
     public double getTurnReading() {
         // Normalize the angle to be within the range (-180, 180].
         return AngleMath.conformAngle(getUnconformedTurnReading());
+    }
+
+    public double getEncoderReading() {
+        return turnEncoder.absVal();
     }
 
     /**
